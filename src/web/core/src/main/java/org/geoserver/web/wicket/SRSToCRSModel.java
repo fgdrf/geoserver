@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -19,15 +20,19 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 @SuppressWarnings("serial")
 public class SRSToCRSModel implements IModel {
     private static final Logger LOGGER = Logging.getLogger(SRSToCRSModel.class);
-    IModel srsModel; 
+    IModel srsModel;
+    
+    /** the model to access the value from resource file **/
+    private StringResourceModel unknownCRSi18n;
     
     public SRSToCRSModel(IModel srsModel) {
         this.srsModel = srsModel;
+        unknownCRSi18n = new StringResourceModel("unknownCRS", this.srsModel, "UNKNOWN");
     }
 
     public Object getObject() {
         String srs = (String) srsModel.getObject();
-        if(srs == null || "UNKNOWN".equals(srs))
+        if(srs == null || unknownCRSi18n.getString().equals(srs))
             return null;
         try {
             return CRS.decode(srs);

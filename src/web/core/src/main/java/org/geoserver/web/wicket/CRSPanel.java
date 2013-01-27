@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -62,6 +63,9 @@ public class CRSPanel extends FormComponentPanel {
 
     /** the wkt link that contains the wkt label **/
     protected GeoServerAjaxFormLink wktLink;
+    
+    /** the model to access the value from resource file **/
+    private StringResourceModel unknownCRSi18n;
     
     /**
      * Constructs the CRS panel.
@@ -110,7 +114,8 @@ public class CRSPanel extends FormComponentPanel {
      * helper for internally creating the panel. 
      */
     void initComponents() {
-            
+        unknownCRSi18n = new StringResourceModel("unknownCRS", getModel(), "UNKNOWN");
+        
         popupWindow = new ModalWindow("popup");
         add( popupWindow );
         
@@ -188,7 +193,7 @@ public class CRSPanel extends FormComponentPanel {
         String srs = srsTextField.getInput();
         CoordinateReferenceSystem crs = null;
         if ( srs != null && !"".equals(srs)) {
-            if ( "UNKNOWN".equals( srs ) ) {
+            if (unknownCRSi18n.getString().equals( srs )) {
                 //leave underlying crs unchanged
                 if ( getModelObject() instanceof CoordinateReferenceSystem ) {
                     setConvertedInput(getModelObject());
@@ -243,9 +248,9 @@ public class CRSPanel extends FormComponentPanel {
         try {
             if(crs != null) {
                 Integer epsgCode = CRS.lookupEpsgCode(crs, false);
-                return epsgCode != null ? "EPSG:" + epsgCode : "UNKNOWN";
+                return epsgCode != null ? "EPSG:" + epsgCode : unknownCRSi18n.getString();
             } else {
-                return "UNKNOWN";
+                return unknownCRSi18n.getString();
             }
         } 
         catch (Exception e) {
