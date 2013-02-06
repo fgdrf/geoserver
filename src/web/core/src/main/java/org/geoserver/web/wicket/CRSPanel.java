@@ -179,9 +179,9 @@ public class CRSPanel extends FormComponentPanel {
         CoordinateReferenceSystem crs = (CoordinateReferenceSystem) getModelObject();
         if ( crs != null ) {
             srsTextField.setModelObject( toSRS(crs) );
-            wktLabel.setDefaultModelObject( crs.getName().toString() );    
+            wktLabel.setDefaultModelObject( crs.getName().toString() );
         } else {
-            wktLabel.setDefaultModelObject(null);
+            wktLabel.setDefaultModelObject( toSRS(null) );
             wktLink.setEnabled(false);
         }
         
